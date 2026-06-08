@@ -1,122 +1,67 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// 1. Importamos la memoria : 'useState' para recordar datos
+import { useState } from "react";
+import "./App.css";
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  // Zona de memoria (los ESTADOS)
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+  // Memoria 1 : Lo que usuario escribe en el input ahora mismo
+  //             Empieza con un texto vacío
+  const [textoInput, setTextoInput] = useState("");
+  // Memoria 2 : La lista oficial de tareas guardadas
+  //             Empieza como un arrray vacío
+  const [ListaTareas, setListaTareas] = useState([]);
 
-      <div className="ticks"></div>
+  // Zona lógica
+  const manejarClick = () =>{
+    // Seguridad: Si el input está vacío o solo tiene espacios
+    if(textoInput.trim() === "") return;
+    // La magia REACT: Cogemos la lista vieja y la pegamos
+    setListaTareas([...ListaTareas, textoInput]);
+    // Limpiamos el input dejándolo vacío para la siguiente tarea
+    setTextoInput("");
+  };
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
+  const manejarTecla = (e) =>{
+    if(e.key === "Enter"){
+      manejarClick();
+    }
+  };
+
+  // Zona visual
+  return(
+    <main className="contenedor-app">
+      <h1>Entrenamiento de Memoria</h1>
+      {/* zona de entrada de datos */}
+      <div className="caja-formulario">
+        <input 
+          type="text" 
+          placeholder="Escribe una tarea..."
+          value={textoInput} // conectamos el input a la Memoria 1
+          // cada pulsación de tecla actualiza la memoria
+          onChange={(e)=> setTextoInput(e.target.value)}
+          onKeyDown={manejarTecla}
+          />
+          <button onClick={manejarClick}>Añadir Tarea</button>
+          </div>
+          {/* zona de salida (la impresora) */}
+          <ul className="caja-lista">
+            {/* si la lista está vacía mostramos un mensaje amistoso */}
+            {ListaTareas.length === 0 ?(
+              <p className="mensaje-vacio">No hay tareas. Añade una.</p>
+            ) : (
+              // Usamos .map() para "fabricar" un <li> por cada tarea guardada
+              ListaTareas.map((tarea, indice) => (
+                <li key={indice} className="tarea-item">
+                  {tarea}
+                </li>
+              ))
+            )}
           </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      
+    </main>
+  );
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
 }
-
-export default App
+export default App;
